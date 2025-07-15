@@ -8,6 +8,10 @@ export default function Component({ service }) {
   const { t } = useTranslation();
   const { widget } = service;
 
+  // Default fields if not specified by user
+  const defaultFields = ["total_pnl", "win_rate", "total_trades", "total_executions"];
+  const displayFields = widget.fields || defaultFields;
+
   const { data: overview, error: overviewError } = useWidgetAPI(widget, "overview");
 
   if (overviewError) {
@@ -17,10 +21,9 @@ export default function Component({ service }) {
   if (!overview) {
     return (
       <Container service={service}>
-        <Block label="tradetally.total_pnl" />
-        <Block label="tradetally.win_rate" />
-        <Block label="tradetally.total_trades" />
-        <Block label="tradetally.total_executions" />
+        {displayFields.map((field) => (
+          <Block key={field} label={`tradetally.${field}`} />
+        ))}
       </Container>
     );
   }
@@ -44,39 +47,71 @@ export default function Component({ service }) {
   // Extract total P&L from the overview response
   const totalPnL = parseFloat(stats.total_pnl) || 0;
 
-  // Extract win rate from the overview response (already calculated as percentage)
-  const winRate = parseFloat(stats.win_rate) || 0;
+  // Function to format and render a field value
+  const formatFieldValue = (fieldName) => {
+    const value = parseFloat(stats[fieldName]) || 0;
 
-  // Format P&L with color
-  const pnlColor = totalPnL >= 0 ? "text-emerald-300" : "text-rose-300";
-  const formattedPnL = (
-    <span className={pnlColor}>
-      {totalPnL >= 0 ? "+" : ""}
-      {t("common.number", {
-        value: totalPnL,
-        style: "currency",
-        currency: "USD",
-      })}
-    </span>
-  );
+    switch (fieldName) {
+      case "total_pnl":
+      case "avg_win":
+      case "avg_loss":
+      case "best_trade":
+      case "worst_trade":
+      case "total_commissions":
+      case "total_fees":
+        const color = value >= 0 ? "text-emerald-300" : "text-rose-300";
+        return (
+          <span className={color}>
+            {value >= 0 ? "+" : ""}
+            {t("common.number", {
+              value: value,
+              style: "currency",
+              currency: "USD",
+            })}
+          </span>
+        );
 
-  // Format win rate with color
-  const winRateColor = winRate >= 50 ? "text-emerald-300" : "text-rose-300";
-  const formattedWinRate = (
-    <span className={winRateColor}>
-      {t("common.percent", {
-        value: winRate,
-        maximumFractionDigits: 1,
-      })}
-    </span>
-  );
+      case "win_rate":
+        const winRateColor = value >= 50 ? "text-emerald-300" : "text-rose-300";
+        return (
+          <span className={winRateColor}>
+            {t("common.percent", {
+              value: value,
+              maximumFractionDigits: 1,
+            })}
+          </span>
+        );
+
+      case "profit_factor":
+      case "sqn":
+      case "k_ratio":
+        return <span className={value >= 1 ? "text-emerald-300" : "text-rose-300"}>{value.toFixed(2)}</span>;
+
+      case "kelly_percentage":
+        return <span className={value >= 0 ? "text-emerald-300" : "text-rose-300"}>{value}%</span>;
+
+      case "total_trades":
+      case "winning_trades":
+      case "losing_trades":
+      case "breakeven_trades":
+      case "total_executions":
+        return t("common.number", { value: Math.round(value) });
+
+      case "avg_mae":
+      case "avg_mfe":
+      case "probability_random":
+        return stats[fieldName] || "N/A";
+
+      default:
+        return t("common.number", { value: value });
+    }
+  };
 
   return (
     <Container service={service}>
-      <Block label="tradetally.total_pnl" value={formattedPnL} />
-      <Block label="tradetally.win_rate" value={formattedWinRate} />
-      <Block label="tradetally.total_trades" value={t("common.number", { value: totalTrades })} />
-      <Block label="tradetally.total_executions" value={t("common.number", { value: totalExecutions })} />
+      {displayFields.map((field) => (
+        <Block key={field} label={`tradetally.${field}`} value={formatFieldValue(field)} />
+      ))}
     </Container>
   );
 }

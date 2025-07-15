@@ -7,7 +7,27 @@ Learn more about [TradeTally](https://tradetally.io/).
 
 TradeTally is a comprehensive trading journal and analytics platform that helps track trades, analyze performance, and gain insights into trading patterns.
 
-Allowed fields: `["total_pnl", "win_rate", "total_trades", "total_executions"]`.
+**Available fields:**
+- `total_pnl` - Total profit/loss
+- `win_rate` - Win rate percentage
+- `total_trades` - Total completed trades
+- `total_executions` - Total trade executions
+- `winning_trades` - Number of winning trades
+- `losing_trades` - Number of losing trades
+- `breakeven_trades` - Number of breakeven trades
+- `avg_win` - Average winning trade
+- `avg_loss` - Average losing trade
+- `best_trade` - Best single trade
+- `worst_trade` - Worst single trade
+- `total_commissions` - Total commission costs
+- `total_fees` - Total fees paid
+- `profit_factor` - Profit factor ratio
+- `sqn` - System Quality Number
+- `k_ratio` - K-Ratio
+- `kelly_percentage` - Kelly percentage
+- `probability_random` - Probability of random chance
+- `avg_mae` - Average Maximum Adverse Excursion
+- `avg_mfe` - Average Maximum Favorable Excursion
 
 The widget requires API key authentication with your TradeTally instance.
 
@@ -29,14 +49,38 @@ widget:
 
 ## Custom Fields
 
-You can customize which metrics to display:
+By default, the widget displays: `["total_pnl", "win_rate", "total_trades", "total_executions"]`
+
+You can customize which metrics to display by specifying the `fields` parameter:
 
 ```yaml
 widget:
   type: tradetally
   url: https://your-tradetally-instance.com
   key: your-api-key
-  fields: ["total_pnl", "win_rate", "total_trades", "total_executions"]
+  fields: ["total_pnl", "win_rate", "profit_factor", "avg_win"]
+```
+
+**Example configurations:**
+
+**Basic Overview:**
+```yaml
+fields: ["total_pnl", "win_rate", "total_trades", "total_executions"]
+```
+
+**Advanced Metrics:**
+```yaml
+fields: ["profit_factor", "sqn", "k_ratio", "kelly_percentage"]
+```
+
+**Performance Analysis:**
+```yaml
+fields: ["avg_win", "avg_loss", "best_trade", "worst_trade"]
+```
+
+**Cost Analysis:**
+```yaml
+fields: ["total_pnl", "total_commissions", "total_fees", "profit_factor"]
 ```
 
 ## Date Range
@@ -53,14 +97,19 @@ widget:
 
 ## Widget Metrics
 
-The widget displays the following metrics:
+The widget can display any combination of the available metrics. By default, it shows:
 
 - **Total P&L**: Overall profit and loss across all trades
 - **Win Rate**: Percentage of profitable trades
 - **Total Trades**: Total number of completed trades
 - **Executions**: Total number of trade executions (buy/sell orders)
 
-All P&L values are displayed in USD with appropriate color coding (green for profits, red for losses).
+**Features:**
+- Color-coded values (green for positive, red for negative)
+- Currency formatting for monetary values
+- Percentage formatting for rates
+- Proper formatting for ratios and advanced metrics
+- Support for up to 4 fields per widget instance
 
 ## Self-Hosted Instances
 

@@ -1,0 +1,37 @@
+---
+# Example configuration for TradeTally widget in Homepage
+# Add this to your services.yaml file
+
+- Trading:
+    - TradeTally Basic:
+        icon: https://tradetally.io/favicon.svg
+        href: https://tradetally.io
+        description: Basic Trading Metrics
+        widget:
+          type: tradetally
+          url: https://tradetally.io  # Or your self-hosted instance URL
+          key: tt_live_your_api_key_here  # Generate from Settings > API Keys in TradeTally
+          # Default fields: ["total_pnl", "win_rate", "total_trades", "total_executions"]
+          
+    - TradeTally Advanced:
+        icon: https://tradetally.io/favicon.svg
+        href: https://tradetally.io
+        description: Advanced Trading Analytics
+        widget:
+          type: tradetally
+          url: https://tradetally.io
+          key: tt_live_your_api_key_here
+          fields: ["profit_factor", "sqn", "k_ratio", "kelly_percentage"]
+          
+    - TradeTally Performance:
+        icon: https://tradetally.io/favicon.svg
+        href: https://tradetally.io
+        description: Performance Analysis
+        widget:
+          type: tradetally
+          url: https://tradetally.io
+          key: tt_live_your_api_key_here
+          fields: ["avg_win", "avg_loss", "best_trade", "worst_trade"]
+          
+          # Optional: Specify date range for analytics
+          # dateRange: "30d"  # Options: "today", "7d", "30d", "90d", "ytd", "all"
